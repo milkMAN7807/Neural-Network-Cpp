@@ -4,7 +4,7 @@
 
 namespace Optimizer
 {
-    matrix applyLoss(matrix input, matrix groundTruth, function<double(double, double)> lossFunc);
-    void backward(Network* network, matrix modelOutput, matrix groundTruth, function<double(double, double)> lossDerivative);
+    matrix applyLoss(const matrix& input, const matrix& groundTruth, function<double(double, double)> lossFunc);
+    void backward(Network* network, const matrix& modelOutput, const matrix& groundTruth, function<double(double, double)> lossDerivative);
     void step(Network* Network, double learnRate);
 }

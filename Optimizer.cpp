@@ -2,7 +2,7 @@
 #include "Matrix.h"
 #include "CustomFunctions.h"
 
-matrix Optimizer::applyLoss(matrix input, matrix groundTruth, function<double(double, double)> lossFunc)
+matrix Optimizer::applyLoss(const matrix& input, const matrix& groundTruth, function<double(double, double)> lossFunc)
 {
     matrix r(input.size(), row(input[0].size()));
 
@@ -18,7 +18,7 @@ matrix Optimizer::applyLoss(matrix input, matrix groundTruth, function<double(do
 }
 
 // Backpropogation
-void Optimizer::backward(Network* network, matrix modelOutput, matrix groundTruth, function<double(double, double)> lossFunc)
+void Optimizer::backward(Network* network, const matrix& modelOutput, const matrix& groundTruth, function<double(double, double)> lossFunc)
 {
     double(*lossFuncPtr)(double, double) = *lossFunc.target<double(*)(double, double)>(); // This is awful omg, hope I dont change the type of my funcs!!!!
     function<double(double, double)> lossDerivative = lossDerivativeMap[lossFuncPtr];
@@ -35,12 +35,12 @@ void Optimizer::backward(Network* network, matrix modelOutput, matrix groundTrut
         double(*activationFuncPtr)(double) = *activationFunc.target<double(*)(double)>();
         function<double(double)> activationDerivative = derivativeMap[activationFuncPtr];
 
-        matrix update = matrixlib::apply(layer->linearOutput, activationDerivative);
-        cur = matrixlib::multElement(cur, update); // da/dz change of activation with respect to linear output applied to gradient vector
+        matrix update = MatrixLib::apply(layer->linearOutput, activationDerivative);
+        cur = MatrixLib::multElement(cur, update); // da/dz change of activation with respect to linear output applied to gradient vector
 
         // Grab this layers gradients
-        matrix inputT = matrixlib::transpose(layer->input);
-        matrix weightGrads = matrixlib::mult(cur, inputT);
+        matrix inputT = MatrixLib::transpose(layer->input);
+        matrix weightGrads = MatrixLib::mult(cur, inputT);
 
         matrix biasGrads = cur; // dz/db is 1 so its whatever the current gradients are
 
@@ -48,8 +48,8 @@ void Optimizer::backward(Network* network, matrix modelOutput, matrix groundTrut
         layer->biasGrads = biasGrads;
 
         // Continue backprop "flow"
-        matrix weightsT = matrixlib::transpose(layer->weights);
-        cur = matrixlib::mult(weightsT, cur); // dz/dx change of linear output with respect to last input 
+        matrix weightsT = MatrixLib::transpose(layer->weights);
+        cur = MatrixLib::mult(weightsT, cur); // dz/dx change of linear output with respect to last input 
     }
 }
 

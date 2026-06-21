@@ -1,38 +1,37 @@
 #pragma once
-
 #include <vector>
 #include <functional>
 #include "Matrix.h"
 
 using namespace std;
 
-class Layer
+namespace NeuralNet
 {
-    //private:
-    public:
-        // Column = neuron num, row = weight num 
-        matrix weights, biases, input;
-        function<double(double)> activationFunc;
-        matrix linearOutput, activationOutput;
-        matrix weightGrads, biasGrads;
+    class Layer
+    {
+        public:
+            int size;
+            matrix weights, biases, input;
+            function<double(double)> activationFunc;
+            matrix linearOutput;
+            matrix weightGrads, biasGrads;
 
-        matrix getLayerOutput(bool withGrad);
+            Layer(int size, int batchSize, function<double(double)> activationFunc, bool isInput, Layer* prevLayer);
+            matrix getLayerOutput(bool withGrad);
 
-    //public:
-        int size;
-        bool isInput;
+        private:
+            bool isInput;
+    };
 
-        Layer(int size, int batchSize, function<double(double)> activationFunc, bool isInput, Layer* prevLayer);
-};
+    class Network
+    {
+        public:
+            int batchSize;    
+            vector<Layer*> layers;    
 
-class Network
-{
-    public:
-        int batchSize;    
-        vector<Layer*> layers;    
+            Network(int batchSize);
+            ~Network();
 
-        Network(int batchSize);
-        ~Network();
-
-        matrix forward(matrix m, bool withGrad);
-};
+            matrix forward(matrix m, bool withGrad);
+    };
+}
