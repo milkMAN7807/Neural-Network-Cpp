@@ -1,39 +1,24 @@
 #pragma once
 #include <vector>
+#include <functional>
 
 using namespace std;
 
 typedef vector<vector<double>> matrix;
 typedef vector<double> row;
  
-namespace matrixlib
+namespace MatrixLib
 {
-    matrix add(matrix a, matrix b);
-    matrix mult(matrix a, matrix b);
-    void multScalar(double s, matrix& m);
-    matrix multElement(matrix a, matrix b);
-    matrix transpose(matrix m);
-    
-    // Compiler throwing BS if this is in the .cpp file, this is the easy fix, oh well
-    template <typename T>
-    matrix apply(matrix in, T func)
-    {
-        matrix r(in.size(), row(in[0].size()));
-    
-        for (int i = 0; i < in.size(); i++)
-        {
-            for (int j = 0; j < in[0].size(); j++)
-            {
-                r[i][j] = func(in[i][j]);
-            }
-        }
+    matrix add(const matrix& a, const matrix& b);
+    matrix mult(const matrix& a, const matrix& b);
+    matrix multScalar(double s, const matrix& m);
+    matrix multElement(const matrix& a, const matrix& b);
+    matrix transpose(const matrix& m);
+    matrix apply(const matrix& in, function<double(double)> func);
 
-        return r;
-    }
-
-    namespace debug
+    namespace Debug
     {
-        void showDim(matrix m);
-        void show(matrix m);
+        void showDim(const matrix& m);
+        void show(const matrix& m);
     }
 }

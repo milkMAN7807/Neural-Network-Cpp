@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Matrix.h"
 
-matrix matrixlib::add(matrix a, matrix b)
+matrix MatrixLib::add(const matrix& a, const matrix& b)
 {
     if (a.size() != b.size() || a[0].size() != b[0].size())
     {
@@ -23,7 +23,7 @@ matrix matrixlib::add(matrix a, matrix b)
     return r;
 }
 
-matrix matrixlib::mult(matrix a, matrix b)
+matrix MatrixLib::mult(const matrix& a, const matrix& b)
 {
     if (a[0].size() != b.size())
     {
@@ -48,18 +48,22 @@ matrix matrixlib::mult(matrix a, matrix b)
     return r;
 }
 
-void matrixlib::multScalar(double s, matrix& m)
+matrix MatrixLib::multScalar(double s, const matrix& m)
 {
+    matrix r(m.size(), row(m[0].size()));
+    
     for (int i = 0; i < m.size(); i++)
     {
         for (int j = 0; j < m[0].size(); j++)
         {
-            m[i][j] *= s;
+            r[i][j] = m[i][j] * s;
         }
     }
+
+    return r;
 }
 
-matrix matrixlib::multElement(matrix a, matrix b)
+matrix MatrixLib::multElement(const matrix& a, const matrix& b)
 {
     if (a.size() != b.size() || a[0].size() != b[0].size())
     {
@@ -80,7 +84,7 @@ matrix matrixlib::multElement(matrix a, matrix b)
     return r;
 }
 
-matrix matrixlib::transpose(matrix m)
+matrix MatrixLib::transpose(const matrix& m)
 {
     matrix r(m[0].size(), row(m.size()));
 
@@ -95,9 +99,22 @@ matrix matrixlib::transpose(matrix m)
     return r;
 }
 
-// matrixlib::apply definition in header file
+matrix MatrixLib::apply(const matrix& in, function<double(double)> func)
+{
+    matrix r(in.size(), row(in[0].size()));
 
-void matrixlib::debug::showDim(matrix m)
+    for (int i = 0; i < in.size(); i++)
+    {
+        for (int j = 0; j < in[0].size(); j++)
+        {
+            r[i][j] = func(in[i][j]);
+        }
+    }
+
+    return r;
+}
+
+void MatrixLib::Debug::showDim(const matrix& m)
 {
     std::cout << "num rows: ";
     std::cout << m.size();
@@ -106,7 +123,7 @@ void matrixlib::debug::showDim(matrix m)
     std::cout << '\n';
 }
 
-void matrixlib::debug::show(matrix m)
+void MatrixLib::Debug::show(const matrix& m)
 {
     for (int i = 0; i < m.size(); i++)
     {

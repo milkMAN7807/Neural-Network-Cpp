@@ -5,8 +5,7 @@
 using namespace std;
 
 // Layer
-
-Layer::Layer(int size, int batchSize, function<double(double)> activationFunc, bool isInput, Layer* prevLayer)
+NeuralNet::Layer::Layer(int size, int batchSize, function<double(double)> activationFunc, bool isInput, Layer* prevLayer)
 {
     this->size = size;
     this->activationFunc = activationFunc;
@@ -37,30 +36,30 @@ Layer::Layer(int size, int batchSize, function<double(double)> activationFunc, b
 }
 
 // Z = sigmoid(WX + B)
-matrix Layer::getLayerOutput(bool withGrad)
+matrix NeuralNet::Layer::getLayerOutput(bool withGrad)
 {   
-    if (isInput) return matrixlib::apply(input, activationFunc);
+    if (isInput) return MatrixLib::apply(input, activationFunc);
 
-    matrix multResultant = matrixlib::mult(weights, input);
-    matrix addResultant = matrixlib::add(multResultant, biases); // Z
+    matrix multResultant = MatrixLib::mult(weights, input);
+    matrix addResultant = MatrixLib::add(multResultant, biases); // Z
 
     if (withGrad) linearOutput = addResultant;
 
-    return matrixlib::apply(addResultant, activationFunc);
+    return MatrixLib::apply(addResultant, activationFunc);
 }
 
 //Network
-Network::Network(int batchSize)
+NeuralNet::Network::Network(int batchSize)
 {
     this->batchSize = batchSize;
 }
 
-Network::~Network()
+NeuralNet::Network::~Network()
 {
     for (Layer* layer : layers) delete layer;
 }
 
-matrix Network::forward(matrix m, bool withGrad)
+matrix NeuralNet::Network::forward(matrix m, bool withGrad)
 {
     layers[0]->input = m;
 
