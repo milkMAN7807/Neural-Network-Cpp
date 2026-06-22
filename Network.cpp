@@ -1,3 +1,6 @@
+#include <iostream>
+#include <cstdlib>
+
 #include <random>
 #include "Network.h"
 #include "CustomFunctions.h"
@@ -60,7 +63,7 @@ NeuralNet::Network::~Network()
 }
 
 matrix NeuralNet::Network::forward(matrix m, bool withGrad)
-{
+{    
     layers[0]->input = m;
 
     for (int i = 1; i < layers.size(); i++)

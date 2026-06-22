@@ -41,6 +41,7 @@ void Optimizer::backward(Network* network, const matrix& modelOutput, const matr
         // Grab this layers gradients
         matrix inputT = MatrixLib::transpose(layer->input);
         matrix weightGrads = MatrixLib::mult(cur, inputT);
+        weightGrads = MatrixLib::multScalar(1.0 / (double)network->batchSize, weightGrads);
 
         matrix biasGrads = cur; // dz/db is 1 so its whatever the current gradients are
 
@@ -71,7 +72,7 @@ void Optimizer::step(Network* network, double learnRate)
         {
             for (int j = 0; j < weights[0].size(); j++)
             {
-                double newW = weights[i][j] -  (learnRate * weightGrads[i][j]);
+                double newW = weights[i][j] - (learnRate * weightGrads[i][j]);
                 weights[i][j] = newW;
             }
         }
@@ -79,9 +80,13 @@ void Optimizer::step(Network* network, double learnRate)
         // Update biases
         for (int i = 0; i < biases.size(); i++)
         {
+            double trueGrad = 0.0;
+            for (int j = 0; j < biases[0].size(); j++) trueGrad += biasGrads[i][j];
+            trueGrad /= network->batchSize; // Normalize
+
             for (int j = 0; j < biases[0].size(); j++)
             {
-                double newB = biases[i][j] -  (learnRate * biasGrads[i][j]);
+                double newB = biases[i][j] - (learnRate * trueGrad);
                 biases[i][j] = newB;
             }
         }

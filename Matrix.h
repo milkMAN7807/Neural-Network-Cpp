@@ -16,6 +16,9 @@ namespace MatrixLib
     matrix transpose(const matrix& m);
     matrix apply(const matrix& in, function<double(double)> func);
 
+    matrix flatten(const matrix& m);
+    matrix toMatrix(const vector<int>& v);
+
     namespace Debug
     {
         void showDim(const matrix& m);

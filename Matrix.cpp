@@ -114,6 +114,22 @@ matrix MatrixLib::apply(const matrix& in, function<double(double)> func)
     return r;
 }
 
+matrix MatrixLib::flatten(const matrix& m)
+{
+    matrix r(1, row(m.size() * m[0].size()));
+
+    for (int i = 0; i < m.size(); i++)
+    {
+        for (int j = 0; j < m[0].size(); j++)
+        {
+            int flatIdx = i * (int)m[0].size() + j;
+            r[0][flatIdx] = m[i][j];
+        }
+    }
+
+    return r;
+}
+
 void MatrixLib::Debug::showDim(const matrix& m)
 {
     std::cout << "num rows: ";
